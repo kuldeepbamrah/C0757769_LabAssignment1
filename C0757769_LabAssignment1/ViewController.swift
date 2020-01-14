@@ -147,16 +147,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     }
     
     
-    func zoomMap(byFactor delta: Double) {
-        var region: MKCoordinateRegion = self.mapView.region
-        var span: MKCoordinateSpan = mapView.region.span
-        span.latitudeDelta *= delta
-        span.longitudeDelta *= delta
-        region.span = span
-        mapView.setRegion(region, animated: true)
-    }
-    
-    
     
     @IBAction func zoomStepperPressed(_ sender: UIStepper)
     {
