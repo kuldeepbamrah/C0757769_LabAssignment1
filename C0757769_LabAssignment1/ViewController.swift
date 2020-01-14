@@ -13,10 +13,14 @@ import CoreLocation
 class ViewController: UIViewController,CLLocationManagerDelegate{
       var locationManager = CLLocationManager()
 
+    @IBOutlet weak var zoomStepper: UIStepper!
     var userLocation = [CLLocation]()
     @IBOutlet weak var mapView: MKMapView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        zoomStepper.value = 0
+        zoomStepper.minimumValue = -5
+        zoomStepper.maximumValue = 5
         // Do any additional setup after loading the view.
         
         locationManager.delegate = self
@@ -34,6 +38,12 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     @objc func doubleTap(gestureRecognizer : UILongPressGestureRecognizer)
     {
+        //remove overlays
+        let count = mapView.overlays.count
+        if count != 0
+        {
+            mapView.removeOverlay(mapView.overlays[0])
+        }
         //remove annotations
         let i = mapView.annotations.count
         if i != 0
@@ -120,7 +130,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: point1, addressDictionary: nil))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: point2, addressDictionary: nil))
-        request.requestsAlternateRoutes = true
+        request.requestsAlternateRoutes = false
         request.transportType = .walking
 
         let directions = MKDirections(request: request)
@@ -136,6 +146,38 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         }
     }
     
+    
+    func zoomMap(byFactor delta: Double) {
+        var region: MKCoordinateRegion = self.mapView.region
+        var span: MKCoordinateSpan = mapView.region.span
+        span.latitudeDelta *= delta
+        span.longitudeDelta *= delta
+        region.span = span
+        mapView.setRegion(region, animated: true)
+    }
+    
+    
+    
+    @IBAction func zoomStepperPressed(_ sender: UIStepper)
+    {
+        if sender.value < 0
+        {
+            var region: MKCoordinateRegion = mapView.region
+            region.span.latitudeDelta = min(region.span.latitudeDelta * 2.0, 180.0)
+            region.span.longitudeDelta = min(region.span.longitudeDelta * 2.0, 180.0)
+            mapView.setRegion(region, animated: true)
+            zoomStepper.value = 0
+        }
+        else
+        {
+            var region: MKCoordinateRegion = mapView.region
+            region.span.latitudeDelta /= 2.0
+            region.span.longitudeDelta /= 2.0
+            mapView.setRegion(region, animated: true)
+            zoomStepper.value = 0
+        }
+    }
+    
    
 }
     
@@ -146,8 +188,11 @@ extension ViewController: MKMapViewDelegate
 
 func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
     let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-    renderer.strokeColor = UIColor.blue
+    renderer.strokeColor = UIColor.green
     return renderer
 }
+    
+    
+    
 }
 
