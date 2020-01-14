@@ -15,6 +15,7 @@
 		9B6C3A8C23CE6330007B64FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B6C3A8A23CE6330007B64FE /* LaunchScreen.storyboard */; };
 		9B6C3A9723CE6330007B64FE /* C0757769_LabAssignment1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6C3A9623CE6330007B64FE /* C0757769_LabAssignment1Tests.swift */; };
 		9B6C3AA223CE6330007B64FE /* C0757769_LabAssignment1UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6C3AA123CE6330007B64FE /* C0757769_LabAssignment1UITests.swift */; };
+		9B6C3AB023CE660D007B64FE /* locationButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B6C3AAF23CE660D007B64FE /* locationButton@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		9B6C3A9D23CE6330007B64FE /* C0757769_LabAssignment1UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = C0757769_LabAssignment1UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B6C3AA123CE6330007B64FE /* C0757769_LabAssignment1UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = C0757769_LabAssignment1UITests.swift; sourceTree = "<group>"; };
 		9B6C3AA323CE6330007B64FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B6C3AAF23CE660D007B64FE /* locationButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "locationButton@3x.png"; path = "../../../Downloads/locationButton@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				9B6C3A8323CE632E007B64FE /* ViewController.swift */,
 				9B6C3A8523CE632E007B64FE /* Main.storyboard */,
 				9B6C3A8823CE6330007B64FE /* Assets.xcassets */,
+				9B6C3AAF23CE660D007B64FE /* locationButton@3x.png */,
 				9B6C3A8A23CE6330007B64FE /* LaunchScreen.storyboard */,
 				9B6C3A8D23CE6330007B64FE /* Info.plist */,
 			);
@@ -232,6 +235,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B6C3AB023CE660D007B64FE /* locationButton@3x.png in Resources */,
 				9B6C3A8C23CE6330007B64FE /* LaunchScreen.storyboard in Resources */,
 				9B6C3A8923CE6330007B64FE /* Assets.xcassets in Resources */,
 				9B6C3A8723CE632E007B64FE /* Main.storyboard in Resources */,
