@@ -42,7 +42,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         let count = mapView.overlays.count
         if count != 0
         {
-            mapView.removeOverlay(mapView.overlays[0])
+            mapView.removeOverlays(mapView.overlays)
         }
         //remove annotations
         let i = mapView.annotations.count
@@ -82,15 +82,11 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     //
     //        //define region
             let region = MKCoordinateRegion(center: location, span: span)
-    //
+    
     //        // set the region on the map
            mapView.setRegion(region, animated: true)
             mapView.showsUserLocation = true
         
-            let annotation = MKPointAnnotation()
-            annotation.title = "You are here"
-           annotation.coordinate = userLocation.coordinate
-            mapView.addAnnotation(annotation)
             
            
             
@@ -101,13 +97,38 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     @IBAction func findMyWayBtn(_ sender: Any)
     {
-        let userLocationCoordinates = mapView.userLocation
-        let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
-        let annotation = mapView.annotations
-        let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
-        print("wdasd \(userLocation)")
-        print(pointToTravel)
-        route(point1: userLocation, point2: pointToTravel)
+        
+        print(mapView.annotations.count)
+//        let userLocationCoordinates = mapView.userLocation
+//        let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
+//        let annotation = mapView.annotations
+//        let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
+//        print(userLocation)
+//        print(pointToTravel)
+//        route(point1: userLocation, point2: pointToTravel)
+        
+        
+        
+        let otherAlert = UIAlertController(title: "Transport Type", message: "Please choose one Transport Type.", preferredStyle: UIAlertController.Style.actionSheet)
+
+         
+
+          let walkingbutton = UIAlertAction(title: "Walking", style: UIAlertAction.Style.default, handler: walkRoute)
+          
+          let autobutton = UIAlertAction(title: "Automobile", style: UIAlertAction.Style.default, handler: autoRoute)
+
+
+              
+
+              // relate actions to controllers
+              otherAlert.addAction(walkingbutton)
+              otherAlert.addAction(autobutton)
+
+        present(otherAlert, animated: true, completion: nil)
+        
+            let selectAlert = UIAlertController(title: "Select a Point on map", message: "Please choose one point on map to start anvigation.", preferredStyle: UIAlertController.Style.actionSheet)
+            present(selectAlert, animated: true, completion: nil)
+      
         //getDirections(loc1: userLocation, loc2: pointToTravel)
         //getDirections(loc1: userLocation, loc2:)
         
@@ -123,7 +144,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     }
     
     
-    func route(point1 : CLLocationCoordinate2D, point2 : CLLocationCoordinate2D)
+    func route(point1 : CLLocationCoordinate2D, point2 : CLLocationCoordinate2D, type : String)
     {
         print(point1)
         print(point2)
@@ -131,18 +152,25 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: point1, addressDictionary: nil))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: point2, addressDictionary: nil))
         request.requestsAlternateRoutes = false
+        
+        if type.elementsEqual("walk")
+        {
         request.transportType = .walking
-
+        }
+        else{
+            request.transportType = .automobile
+        }
+        
         let directions = MKDirections(request: request)
 
        directions.calculate { [unowned self] response, error in
           guard let unwrappedResponse = response else { return }
-           for route in unwrappedResponse.routes {
-                
-            self.mapView.addOverlay(route.polyline)
+           let route = unwrappedResponse.routes[0]
                 self.mapView.delegate=self
+            self.mapView.addOverlay(route.polyline)
+                
                 self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
-            }
+            
         }
     }
     
@@ -167,6 +195,30 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             zoomStepper.value = 0
         }
     }
+    
+    func walkRoute(alert: UIAlertAction){
+     
+     let userLocationCoordinates = mapView.userLocation
+     let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
+     let annotation = mapView.annotations
+     let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
+              
+        route(point1: userLocation, point2: pointToTravel, type: "walk")
+     
+     
+                 // print("You tapped: \(alert.title)")
+              }
+
+    func autoRoute(alert: UIAlertAction){
+     
+     let userLocationCoordinates = mapView.userLocation
+     let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
+     let annotation = mapView.annotations
+     let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
+              
+     route(point1: userLocation, point2: pointToTravel, type: "auto")
+                // print("You tapped: \(alert.title)")
+             }
     
    
 }
