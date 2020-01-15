@@ -16,6 +16,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     @IBOutlet weak var zoomStepper: UIStepper!
     var userLocation = [CLLocation]()
     @IBOutlet weak var mapView: MKMapView!
+    var type : String = ""
+    
+    var destination = CLLocationCoordinate2D()
     override func viewDidLoad() {
         super.viewDidLoad()
         zoomStepper.value = 0
@@ -56,9 +59,10 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         let coordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
         let annotation = MKPointAnnotation()
-        annotation.title = "Latitude:\(coordinate.latitude)"
-        annotation.subtitle = "Longitude:\(coordinate.longitude)"
+        annotation.title = "Destination"
+        //annotation.subtitle = "Longitude:\(coordinate.longitude)"
         annotation.coordinate = coordinate
+        destination  = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
         mapView.addAnnotation(annotation)
     }
     
@@ -91,8 +95,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
            
             
             
-            //find the user address from his location
-            //CLGeocoder().reverseGeocodeLocation()
+            
         }
     
     @IBAction func findMyWayBtn(_ sender: Any)
@@ -116,11 +119,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
           let walkingbutton = UIAlertAction(title: "Walking", style: UIAlertAction.Style.default, handler: walkRoute)
           
           let autobutton = UIAlertAction(title: "Automobile", style: UIAlertAction.Style.default, handler: autoRoute)
-
-
-              
-
-              // relate actions to controllers
               otherAlert.addAction(walkingbutton)
               otherAlert.addAction(autobutton)
 
@@ -129,19 +127,10 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             let selectAlert = UIAlertController(title: "Select a Point on map", message: "Please choose one point on map to start anvigation.", preferredStyle: UIAlertController.Style.actionSheet)
             present(selectAlert, animated: true, completion: nil)
       
-        //getDirections(loc1: userLocation, loc2: pointToTravel)
-        //getDirections(loc1: userLocation, loc2:)
         
         
     }
     
-    func getDirections(loc1: CLLocationCoordinate2D, loc2: CLLocationCoordinate2D) {
-       let source = MKMapItem(placemark: MKPlacemark(coordinate: loc1))
-       source.name = "Your Location"
-       let destination = MKMapItem(placemark: MKPlacemark(coordinate: loc2))
-       destination.name = "Destination"
-       MKMapItem.openMaps(with: [source, destination], launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
-    }
     
     
     func route(point1 : CLLocationCoordinate2D, point2 : CLLocationCoordinate2D, type : String)
@@ -150,12 +139,13 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         print(point2)
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: point1, addressDictionary: nil))
-        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: point2, addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination, addressDictionary: nil))
         request.requestsAlternateRoutes = false
         
         if type.elementsEqual("walk")
         {
         request.transportType = .walking
+            
         }
         else{
             request.transportType = .automobile
@@ -202,7 +192,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
      let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
      let annotation = mapView.annotations
      let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
-              
+        mapView.removeOverlays(mapView.overlays)
+        type = "walk"
         route(point1: userLocation, point2: pointToTravel, type: "walk")
      
      
@@ -215,7 +206,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
      let userLocation  = CLLocationCoordinate2D(latitude: userLocationCoordinates.coordinate.latitude, longitude: userLocationCoordinates.coordinate.longitude)
      let annotation = mapView.annotations
      let pointToTravel = CLLocationCoordinate2D(latitude: annotation[0].coordinate.latitude, longitude: annotation[0].coordinate.longitude)
-              
+              mapView.removeOverlays(mapView.overlays)
+        type = "auto"
      route(point1: userLocation, point2: pointToTravel, type: "auto")
                 // print("You tapped: \(alert.title)")
              }
@@ -231,6 +223,12 @@ extension ViewController: MKMapViewDelegate
 func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
     let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
     renderer.strokeColor = UIColor.green
+    renderer.lineWidth = 4
+    if self.type.elementsEqual("walk")
+   {
+    renderer.lineDashPhase = 2
+    renderer.strokeColor = UIColor.red
+    }
     return renderer
 }
     
